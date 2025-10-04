@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Find tutor</title>
+    <link rel="stylesheet" href="tutor.css" />
+  </head>
+  <body>
+    <nav style="text-align: center; margin-top: 24px">
+      <button id="show-tutors" class="nav-btn active">Browse Tutors</button>
+      <button id="show-login" class="nav-btn">Login</button>
+      <button id="show-signup" class="nav-btn">Sign Up</button>
+      <button id="logout-btn" class="nav-btn" style="display: none">
+        Logout
+      </button>
+      <button id="toggle-mode">🌙 Dark Mode</button>
+    </nav>
+
+    <!-- Public Tutor List (Default View) -->
+    <section id="tutors-section" style="display: block; margin-top: 32px">
+      <h2>Find Your Perfect Tutor</h2>
+      <div id="search-filters" style="margin-bottom: 20px; text-align: center">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search by name or subject..."
+          style="padding: 8px; margin-right: 10px; width: 300px"
+        />
+        <select id="subject-filter" style="padding: 8px; margin-right: 10px">
+          <option value="">All Subjects</option>
+          <option value="Math">Math</option>
+          <option value="Physics">Physics</option>
+          <option value="Chemistry">Chemistry</option>
+          <option value="Biology">Biology</option>
+          <option value="English">English</option>
+          <option value="History">History</option>
+          <option value="Computer Science">Computer Science</option>
+        </select>
+        <button id="search-btn" style="padding: 8px 16px">Search</button>
+      </div>
+      <div id="tutors-list"></div>
+    </section>
+
+    <!-- Login Section -->
+    <section id="login-section" style="display: none; margin-top: 32px">
+      <h2>Login to Your Account</h2>
+      <div id="login-form-container"></div>
+    </section>
+
+    <!-- Signup Section -->
+    <section id="signup-section" style="display: none; margin-top: 32px">
+      <h2>Create New Account</h2>
+      <div id="signup-form-container"></div>
+    </section>
+
+    <!-- Tutor Dashboard (Hidden by default) -->
+    <section id="tutor-dashboard" style="display: none; margin-top: 32px">
+      <h2>My Tutor Dashboard</h2>
+      <div id="tutor-dashboard-content"></div>
+    </section>
+
+    <!-- Parent Dashboard (Hidden by default) -->
+    <section id="parent-dashboard" style="display: none; margin-top: 32px">
+      <h2>My Parent Dashboard</h2>
+      <div id="parent-dashboard-content"></div>
+    </section>
+
+    <!-- Mobile-friendly notification system -->
+    <div id="notification" class="notification" style="display: none">
+      <div class="notification-content">
+        <span class="notification-icon">ℹ️</span>
+        <span class="notification-message"></span>
+        <button class="notification-close">×</button>
+      </div>
+    </div>
+
+    <script src="tutor.js"></script>
+  </body>
+</html>

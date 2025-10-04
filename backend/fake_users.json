@@ -1,0 +1,82 @@
+[
+  {
+    "_id": "1",
+    "name": "Alice Johnson",
+    "email": "alice@example.com",
+    "password": "alice123",
+    "phone": "555-1234",
+    "address": "101 Main St"
+  },
+  {
+    "_id": "2",
+    "name": "Bob Smith",
+    "email": "bob@example.com",
+    "password": "bob123",
+    "phone": "555-2345",
+    "address": "202 Oak Ave"
+  },
+  {
+    "_id": "3",
+    "name": "Carol Lee",
+    "email": "carol@example.com",
+    "password": "carol123",
+    "phone": "555-3456",
+    "address": "303 Pine Rd"
+  },
+  {
+    "_id": "4",
+    "name": "David Kim",
+    "email": "david@example.com",
+    "password": "david123",
+    "phone": "555-4567",
+    "address": "404 Maple St"
+  },
+  {
+    "_id": "5",
+    "name": "Eva Brown",
+    "email": "eva@example.com",
+    "password": "eva123",
+    "phone": "555-5678",
+    "address": "505 Cedar Ave"
+  },
+  {
+    "_id": "6",
+    "name": "Frank Green",
+    "email": "frank@example.com",
+    "password": "frank123",
+    "phone": "555-6789",
+    "address": "606 Birch Rd"
+  },
+  {
+    "_id": "7",
+    "name": "Grace Hall",
+    "email": "grace@example.com",
+    "password": "grace123",
+    "phone": "555-7890",
+    "address": "707 Spruce St"
+  },
+  {
+    "_id": "8",
+    "name": "Henry Young",
+    "email": "henry@example.com",
+    "password": "henry123",
+    "phone": "555-8901",
+    "address": "808 Willow Ave"
+  },
+  {
+    "_id": "9",
+    "name": "Ivy King",
+    "email": "ivy@example.com",
+    "password": "ivy123",
+    "phone": "555-9012",
+    "address": "909 Elm Rd"
+  },
+  {
+    "_id": "10",
+    "name": "Jackie Fox",
+    "email": "jackie@example.com",
+    "password": "jackie123",
+    "phone": "555-0123",
+    "address": "1010 Chestnut St"
+  }
+]
