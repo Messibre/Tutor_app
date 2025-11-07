@@ -528,7 +528,7 @@ parentBtn.onclick = showParentForm;
 // Function to load tutors from the database
 async function loadTutors() {
   try {
-    const response = await fetch("http://localhost:3001/api/tutors");
+    const response = await fetch(window.getApiUrl("/api/tutors"));
     if (response.ok) {
       const tutors = await response.json();
       listContainer.innerHTML = "";
@@ -737,7 +737,7 @@ let allTutors = []; // Store all tutors for filtering
 // Enhanced loadTutors function with search/filter support
 async function loadTutorsWithFilter() {
   try {
-    const response = await fetch("http://localhost:3001/api/tutors");
+    const response = await fetch(window.getApiUrl("/api/tutors"));
     if (response.ok) {
       allTutors = await response.json();
       displayTutors(allTutors);
@@ -909,7 +909,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Tutor dashboard functions
 async function loadTutorRatings(tutorId) {
   try {
-    const response = await fetch(`http://localhost:3001/api/tutors/${tutorId}`);
+    const response = await fetch(window.getApiUrl(`/api/tutors/${tutorId}`));
     if (response.ok) {
       const tutor = await response.json();
       const ratingsContainer = document.getElementById("tutor-ratings");
@@ -950,7 +950,7 @@ async function loadTutorRatings(tutorId) {
 
 async function loadTutorStats(tutorId) {
   try {
-    const response = await fetch(`http://localhost:3001/api/tutors/${tutorId}`);
+    const response = await fetch(window.getApiUrl(`/api/tutors/${tutorId}`));
     if (response.ok) {
       const tutor = await response.json();
 
@@ -1120,14 +1120,11 @@ function updateTutorStatus(tutorId) {
 
 async function updateTutorStatusAPI(tutorId, status) {
   try {
-    const response = await fetch(
-      `http://localhost:3001/api/tutors/${tutorId}`,
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
-      }
-    );
+    const response = await fetch(window.getApiUrl(`/api/tutors/${tutorId}`), {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    });
 
     if (response.ok) {
       const updatedTutor = await response.json();
