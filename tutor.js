@@ -206,7 +206,14 @@ function createTutorSignupForm(onSubmit) {
     e.preventDefault();
     const data = {};
     Array.from(form.elements).forEach((el) => {
-      if (el.name) data[el.name] = el.value;
+      if (el.name) {
+        // Handle file inputs separately
+        if (el.type === "file" && el.files && el.files.length > 0) {
+          data[el.name] = el.files[0]; // Store the file object
+        } else {
+          data[el.name] = el.value;
+        }
+      }
     });
     if (onSubmit) onSubmit(data);
   };
@@ -269,7 +276,7 @@ function createLoginForm() {
   const emailField = document.createElement("div");
   emailField.innerHTML = `
     <label>Email:</label><br>
-    <input type="email" name="email" required style="width: 100%; padding: 8px; margin: 5px 0;">
+    <input type="email" name="email" placeholder="example@gmail.com" required style="width: 100%; padding: 8px; margin: 5px 0;">
   `;
   form.appendChild(emailField);
 
@@ -313,7 +320,7 @@ function createLoginForm() {
         currentUserType === "tutor"
           ? "/api/tutors/login"
           : "/api/parents/login";
-      const response = await fetch(`http://localhost:3001${endpoint}`, {
+      const response = await fetch(window.getApiUrl(endpoint), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -409,7 +416,7 @@ function showTutorForm() {
 
   async function submitTutorSignup(data) {
     try {
-      const response = await fetch("http://localhost:3001/api/tutors", {
+      const response = await fetch(window.getApiUrl("/api/tutors"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -483,16 +490,13 @@ function showParentForm() {
   signupFormContainer.appendChild(
     createParentSignupForm(async (data) => {
       try {
-        const response = await fetch(
-          "http://localhost:3001/api/parents/signup",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        );
+        const response = await fetch(window.getApiUrl("/api/parents/signup"), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
 
         if (response.ok) {
           const newParent = await response.json();
@@ -545,6 +549,10 @@ async function loadTutors() {
 
 // Dashboard functions
 function showTutorDashboard(tutor) {
+  // Ensure tutorDashboard is initialized
+  if (!tutorDashboard) {
+    tutorDashboard = document.getElementById("tutor-dashboard");
+  }
   showSection(tutorDashboard);
   const dashboardContent = document.getElementById("tutor-dashboard-content");
   dashboardContent.innerHTML = `
@@ -663,6 +671,10 @@ function logout() {
 }
 
 function showParentDashboard(parent) {
+  // Ensure parentDashboard is initialized
+  if (!parentDashboard) {
+    parentDashboard = document.getElementById("parent-dashboard");
+  }
   showSection(parentDashboard);
   const dashboardContent = document.getElementById("parent-dashboard-content");
   dashboardContent.innerHTML = `
@@ -774,10 +786,12 @@ function setupSearchAndFilter() {
       );
     }
 
-    // Filter by subject
+    // Filter by subject (case-insensitive)
     if (selectedSubject) {
       filteredTutors = filteredTutors.filter(
-        (tutor) => tutor.subject === selectedSubject
+        (tutor) =>
+          tutor.subject &&
+          tutor.subject.toLowerCase() === selectedSubject.toLowerCase()
       );
     }
 
@@ -1068,14 +1082,11 @@ function editTutorProfile(tutorId) {
 
   async function submitUpdate(updateData, tutorId) {
     try {
-      const response = await fetch(
-        `http://localhost:3001/api/tutors/${tutorId}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updateData),
-        }
-      );
+      const response = await fetch(window.getApiUrl(`/api/tutors/${tutorId}`), {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updateData),
+      });
 
       if (response.ok) {
         const updatedTutor = await response.json();
@@ -1143,9 +1154,7 @@ function closeEditModal() {
 // Parent dashboard functions
 async function loadParentFavorites(parentId) {
   try {
-    const response = await fetch(
-      `http://localhost:3001/api/parents/${parentId}`
-    );
+    const response = await fetch(window.getApiUrl(`/api/parents/${parentId}`));
     if (response.ok) {
       const parent = await response.json();
       const favoritesContainer = document.getElementById("parent-favorites");
@@ -1186,9 +1195,7 @@ async function loadParentFavorites(parentId) {
 
 async function loadParentRatings(parentId) {
   try {
-    const response = await fetch(
-      `http://localhost:3001/api/parents/${parentId}`
-    );
+    const response = await fetch(window.getApiUrl(`/api/parents/${parentId}`));
     if (response.ok) {
       const parent = await response.json();
       const ratingsContainer = document.getElementById("parent-ratings");
@@ -1236,9 +1243,7 @@ async function loadParentRatings(parentId) {
 
 async function loadParentStats(parentId) {
   try {
-    const response = await fetch(
-      `http://localhost:3001/api/parents/${parentId}`
-    );
+    const response = await fetch(window.getApiUrl(`/api/parents/${parentId}`));
     if (response.ok) {
       const parent = await response.json();
 
@@ -1311,7 +1316,7 @@ function rateTutor(tutorId, tutorName) {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/parents/${currentUser._id}/rate`,
+        window.getApiUrl(`/api/parents/${currentUser._id}/rate`),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -1392,7 +1397,7 @@ function editRating(parentId, tutorId, currentRating, currentComment) {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/parents/${parentId}/rate`,
+        window.getApiUrl(`/api/parents/${parentId}/rate`),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -1426,7 +1431,7 @@ async function removeFromFavorites(parentId, tutorId) {
   ) {
     try {
       const response = await fetch(
-        `http://localhost:3001/api/parents/${parentId}/favorites/${tutorId}`,
+        window.getApiUrl(`/api/parents/${parentId}/favorites/${tutorId}`),
         {
           method: "DELETE",
         }
@@ -1460,7 +1465,7 @@ async function addToFavorites(tutorId) {
 
   try {
     const response = await fetch(
-      `http://localhost:3001/api/parents/${currentUser._id}/favorites`,
+      window.getApiUrl(`/api/parents/${currentUser._id}/favorites`),
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1494,12 +1499,21 @@ let signupSection, loginSection, tutorsSection, tutorDashboard, parentDashboard;
 
 // Navigation functions
 function showSection(sectionToShow) {
+  // Initialize sections if not already initialized
+  if (!signupSection) signupSection = document.getElementById("signup-section");
+  if (!loginSection) loginSection = document.getElementById("login-section");
+  if (!tutorsSection) tutorsSection = document.getElementById("tutors-section");
+  if (!tutorDashboard)
+    tutorDashboard = document.getElementById("tutor-dashboard");
+  if (!parentDashboard)
+    parentDashboard = document.getElementById("parent-dashboard");
+
   // Hide all sections
-  signupSection.style.display = "none";
-  loginSection.style.display = "none";
-  tutorsSection.style.display = "none";
-  tutorDashboard.style.display = "none";
-  parentDashboard.style.display = "none";
+  if (signupSection) signupSection.style.display = "none";
+  if (loginSection) loginSection.style.display = "none";
+  if (tutorsSection) tutorsSection.style.display = "none";
+  if (tutorDashboard) tutorDashboard.style.display = "none";
+  if (parentDashboard) parentDashboard.style.display = "none";
 
   // Show the requested section
   sectionToShow.style.display = "block";
@@ -1512,17 +1526,20 @@ function showSection(sectionToShow) {
 
 // Navigation event listeners
 document.getElementById("show-tutors").onclick = () => {
+  if (!tutorsSection) tutorsSection = document.getElementById("tutors-section");
   showSection(tutorsSection);
   document.getElementById("show-tutors").classList.add("active");
 };
 
 document.getElementById("show-login").onclick = () => {
+  if (!loginSection) loginSection = document.getElementById("login-section");
   showSection(loginSection);
   document.getElementById("show-login").classList.add("active");
   createLoginForm();
 };
 
 document.getElementById("show-signup").onclick = () => {
+  if (!signupSection) signupSection = document.getElementById("signup-section");
   showSection(signupSection);
   document.getElementById("show-signup").classList.add("active");
   createSignupForm();
@@ -1602,87 +1619,3 @@ document.addEventListener("DOMContentLoaded", () => {
     .querySelector(".notification-close")
     .addEventListener("click", hideNotification);
 });
-
-// Fake parent users for testing
-const fakeParents = [
-  {
-    _id: "1",
-    name: "Alice Johnson",
-    email: "alice@example.com",
-    password: "alice123",
-    phone: "555-1234",
-    address: "101 Main St",
-  },
-  {
-    _id: "2",
-    name: "Bob Smith",
-    email: "bob@example.com",
-    password: "bob123",
-    phone: "555-2345",
-    address: "202 Oak Ave",
-  },
-  {
-    _id: "3",
-    name: "Carol Lee",
-    email: "carol@example.com",
-    password: "carol123",
-    phone: "555-3456",
-    address: "303 Pine Rd",
-  },
-  {
-    _id: "4",
-    name: "David Kim",
-    email: "david@example.com",
-    password: "david123",
-    phone: "555-4567",
-    address: "404 Maple St",
-  },
-  {
-    _id: "5",
-    name: "Eva Brown",
-    email: "eva@example.com",
-    password: "eva123",
-    phone: "555-5678",
-    address: "505 Cedar Ave",
-  },
-  {
-    _id: "6",
-    name: "Frank Green",
-    email: "frank@example.com",
-    password: "frank123",
-    phone: "555-6789",
-    address: "606 Birch Rd",
-  },
-  {
-    _id: "7",
-    name: "Grace Hall",
-    email: "grace@example.com",
-    password: "grace123",
-    phone: "555-7890",
-    address: "707 Spruce St",
-  },
-  {
-    _id: "8",
-    name: "Henry Young",
-    email: "henry@example.com",
-    password: "henry123",
-    phone: "555-8901",
-    address: "808 Willow Ave",
-  },
-  {
-    _id: "9",
-    name: "Ivy King",
-    email: "ivy@example.com",
-    password: "ivy123",
-    phone: "555-9012",
-    address: "909 Elm Rd",
-  },
-  {
-    _id: "10",
-    name: "Jackie Fox",
-    email: "jackie@example.com",
-    password: "jackie123",
-    phone: "555-0123",
-    address: "1010 Chestnut St",
-  },
-];

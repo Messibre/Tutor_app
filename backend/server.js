@@ -8,12 +8,36 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: [
-    process.env.CORS_ORIGIN || "http://localhost:3000",
-    "http://127.0.0.1:5500",
-    "http://localhost:5500",
-    "http://127.0.0.1:3000",
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    const allowedOrigins = [
+      process.env.CORS_ORIGIN,
+      process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
+      "http://localhost:3000",
+      "http://127.0.0.1:5500",
+      "http://localhost:5500",
+      "http://127.0.0.1:3000",
+      /^https:\/\/.*\.vercel\.app$/, // Allow all Vercel preview deployments
+    ].filter(Boolean);
+
+    if (
+      allowedOrigins.some((allowed) => {
+        if (typeof allowed === "string") {
+          return origin === allowed || origin.startsWith(allowed);
+        }
+        if (allowed instanceof RegExp) {
+          return allowed.test(origin);
+        }
+        return false;
+      })
+    ) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Allow all origins for now (you can restrict this)
+    }
+  },
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -26,7 +50,6 @@ mongoose
   .connect(mongoURI)
   .then(() => {
     console.log("✅ Connected to MongoDB successfully");
-    console.log(`📍 Database: ${mongoURI}`);
   })
   .catch((err) => {
     console.error("❌ MongoDB connection error:", err.message);
@@ -47,5 +70,11 @@ app.use("/api/tutors", tutorsRouter);
 const parentsRouter = require("./routes/parents");
 app.use("/api/parents", parentsRouter);
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Export for Vercel serverless functions
+module.exports = app;
+
+// Only start server if not in Vercel environment
+if (process.env.VERCEL !== "1") {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}

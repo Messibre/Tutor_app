@@ -1,5 +1,4 @@
 // Environment Configuration Example
-// Copy this file to .env and update the values
 
 module.exports = {
   // MongoDB Configuration
@@ -8,9 +7,6 @@ module.exports = {
   // Server Configuration
   PORT: 3001,
   NODE_ENV: "development",
-
-  // For MongoDB Atlas (cloud), replace MONGODB_URI with your Atlas connection string
-  // Example: 'mongodb+srv://username:password@cluster.mongodb.net/tutorapp?retryWrites=true&w=majority'
 
   // JWT Secret (for future authentication)
   JWT_SECRET: "your-super-secret-jwt-key-change-this-in-production",
