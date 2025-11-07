@@ -51,8 +51,8 @@ A beautiful, mobile-first tutoring platform that connects students with qualifie
 1. **Clone the repository**
 
    ```bash
-   git clone <your-repo-url>
-   cd tutor
+   git clone https://github.com/Messibre/tutor_app.git
+   cd tutor_app
    ```
 
 2. **Install backend dependencies**
@@ -64,9 +64,10 @@ A beautiful, mobile-first tutoring platform that connects students with qualifie
 
 3. **Set up environment variables**
 
-   ```bash
-   cp config.example.js config.js
-   # Edit config.js with your MongoDB connection string
+   Create a `.env` file in the `backend` directory:
+   ```env
+   MONGODB_URI=your_mongodb_connection_string
+   PORT=3001
    ```
 
 4. **Start the backend server**
@@ -81,6 +82,18 @@ A beautiful, mobile-first tutoring platform that connects students with qualifie
    # Open tutor.html in your browser
    # Or serve it with a local server
    ```
+
+## 🚀 Deployment to Vercel
+
+This app is configured for easy deployment to Vercel. See `QUICK_START.md` for detailed deployment instructions.
+
+### Quick Deploy
+
+1. Install Vercel CLI: `npm install -g vercel`
+2. Login: `vercel login`
+3. Deploy: `vercel`
+4. Set environment variables in Vercel dashboard
+5. Redeploy: `vercel --prod`
 
 ## 🛠️ Tech Stack
 
@@ -131,20 +144,6 @@ The app is designed with mobile users in mind:
 - **Forms** with proper validation
 - **Notifications** with smooth animations
 
-## 🚀 Deployment
-
-### Backend Deployment
-
-1. Set up MongoDB Atlas or local MongoDB
-2. Configure environment variables
-3. Deploy to your preferred platform (Heroku, Vercel, etc.)
-
-### Frontend Deployment
-
-1. Upload files to any static hosting service
-2. Ensure backend API is accessible
-3. Update API endpoints if needed
-
 ## 📋 API Endpoints
 
 ### Tutors
@@ -157,10 +156,11 @@ The app is designed with mobile users in mind:
 
 ### Parents
 
-- `GET /api/parents` - Get all parents
-- `POST /api/parents` - Create new parent
+- `GET /api/parents/:id` - Get parent by ID
+- `POST /api/parents/signup` - Create new parent
 - `POST /api/parents/login` - Parent login
 - `POST /api/parents/:id/favorites` - Add to favorites
+- `DELETE /api/parents/:id/favorites/:tutorId` - Remove from favorites
 - `POST /api/parents/:id/rate` - Rate tutor
 
 ## 🤝 Contributing
@@ -173,7 +173,7 @@ The app is designed with mobile users in mind:
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ## 🙏 Acknowledgments
 
